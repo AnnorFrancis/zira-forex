@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checkout | Zira Forex</title>
+<meta name="theme-color" content="#062a20">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-page="checkout">
+<main id="main">
+  <section class="section checkout" data-tone="pearl" style="padding-top:calc(var(--nav-h) + 72px)">
+    <div class="wrap grid" style="align-items:start">
+      <div class="co-main" style="grid-column:1 / span 7">
+        <h1 class="t-head" data-split>Complete your order</h1>
+        <form class="form" data-co novalidate style="margin-top:40px">
+          <h2 class="t-lead">Your details</h2>
+          <div class="row2"><label>Full name<input name="name" autocomplete="name" required></label><label>Country<input name="country" autocomplete="country-name" required value="Ghana"></label></div>
+          <div class="row2"><label>Email<input name="email" type="email" autocomplete="email" required></label><label>WhatsApp <span class="hint">For your Telegram invite</span><input name="wa" type="tel" autocomplete="tel" placeholder="+233"></label></div>
+          <h2 class="t-lead" style="margin-top:24px">How would you like to pay?</h2>
+          <div class="choice" role="radiogroup" aria-label="Payment method">
+            <label><input type="radio" name="method" value="Mobile Money" checked> Mobile Money <span class="t-soft t-small" style="margin-left:auto">MTN MoMo, Telecel Cash, AirtelTigo</span></label>
+            <label><input type="radio" name="method" value="Card"> Card <span class="t-soft t-small" style="margin-left:auto">On the payment provider&rsquo;s secure page</span></label>
+            <label><input type="radio" name="method" value="Bank transfer"> Bank transfer <span class="t-soft t-small" style="margin-left:auto">Seat held for 48 hours</span></label>
+          </div>
+          <div data-pay-detail></div>
+          <label class="agree"><input type="checkbox" name="risk" required><span>I understand this is education, not financial advice, and that trading on margin can lose all of my deposit. I accept the <a class="link" href="policies.html#terms">terms</a> and <a class="link" href="policies.html#refunds">refund policy</a>.</span></label>
+          <button class="btn" type="submit" data-pay style="justify-self:start;min-width:240px">Pay <span data-co-total></span></button>
+          <p class="console__warn" data-co-msg aria-live="polite"></p>
+          <p class="t-small t-soft">Sample checkout for the pitch: no payment is taken and no card details are ever entered on this site.</p>
+        </form>
+        <div class="co-done" data-co-done hidden></div>
+      </div>
+      <aside class="co-sum glass glass--light" style="grid-column:9 / span 4" data-co-sum aria-live="polite"></aside>
+    </div>
+  </section>
+  <div data-footer></div>
+</main>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/vendor/lenis.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/desk.js"></script>
+<script src="assets/js/inner.js"></script>
+</body>
+</html>

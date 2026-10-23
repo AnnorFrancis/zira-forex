@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+node_modules/
+.taste-skill/
+
+# working notes (kept local, never published)
+BRIEF*.md
+CHANGES.md
+.codex-last.txt
+ChatGPT image prompts.txt
