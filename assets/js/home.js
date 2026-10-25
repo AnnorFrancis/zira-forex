@@ -48,7 +48,7 @@
         '<ul class="offer__items">' + o.items.map(function (it) { return '<li>' + it + '</li>'; }).join('') + '</ul></div>';
     }).join('') +
       '<aside class="offers__spot" aria-live="polite"><div class="spot__frame" data-tilt="5">' +
-      KF.offers.map(function (o, i) { return '<img src="' + UI.img(o.img) + '" alt="' + o.name + ': ' + o.line.replace(/"/g, '') + '" data-spot="' + o.id + '"' + (i === 0 ? ' class="is-on"' : '') + ' loading="lazy">'; }).join('') +
+      KF.offers.map(function (o, i) { return '<img src="' + UI.img(o.img) + '" alt="' + KF.photoAlt[o.img] + '" data-spot="' + o.id + '"' + (i === 0 ? ' class="is-on"' : '') + ' loading="lazy">'; }).join('') +
       '<div class="spot__chip glass"><div class="spot__word" data-spot-word>' + KF.offers[0].word + '</div><p class="spot__line" data-spot-line>' + KF.offers[0].line + '</p></div></div></aside>';
     var cols = $$('.offer', host), imgs = $$('[data-spot]', host), word = $('[data-spot-word]'), line = $('[data-spot-line]');
     var cur = 0, hoverT, auto, inView = false, held = false;
@@ -94,9 +94,9 @@
   // on the road
   (function road() {
     var frames = ['portrait-20', 'portrait-6', 'portrait-13', 'portrait-15', 'portrait-21', 'event-1', 'portrait-18', 'portrait-17', 'portrait-16', 'portrait-19', 'portrait-3'];
-    var alts = { 'portrait-20': 'Your photo', 'portrait-13': 'Your photo', 'portrait-21': 'Your photo', 'portrait-16': 'Your photo', 'portrait-1': 'Your photo', 'portrait-8': 'Your photo', 'portrait-6': 'Your photo', 'event-2': 'Sample event photo', 'portrait-15': 'Your photo', 'portrait-3': 'Your photo', 'portrait-11': 'Your photo', 'portrait-17': 'Your photo', 'portrait-10': 'Your photo', 'portrait-7': 'Your photo', 'portrait-22': 'Your photo', 'event-1': 'Bootcamp photo', 'portrait-2': 'Your photo', 'portrait-18': 'Your photo', 'portrait-9': 'Your photo', 'portrait-12': 'Your photo', 'portrait-19': 'Your photo', 'portrait-4': 'Your photo' };
+    var alts = KF.photoAlt;
     var el = $('[data-road]'); if (!el) return;
-    el.innerHTML = frames.map(function (f) { return '<figure><img src="' + UI.img(f, 'thumb') + '" alt="' + (alts[f] || 'Your photo') + '" loading="lazy" draggable="false"></figure>'; }).join('');
+    el.innerHTML = frames.map(function (f) { return '<figure><img src="' + UI.img(f, 'thumb') + '" alt="' + (alts[f] || 'Community photograph') + '" loading="lazy" draggable="false"></figure>'; }).join('');
     $('[data-road-count]').textContent = frames.length + ' sample frames';
     // drag to scroll
     var down = false, sx = 0, sl = 0, moved = 0;

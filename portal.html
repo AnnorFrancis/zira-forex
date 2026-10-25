@@ -41,7 +41,7 @@
           <div class="at-card__h"><h2 class="t-lead">Your journal</h2><span class="t-small t-soft">Zira reviews it in mentorship</span></div>
           <form class="form at-jform" data-at-jform>
             <div class="row2"><label>Pair<select name="pair"><option>XAUUSD</option><option>GBPJPY</option><option>GBPAUD</option><option>USDJPY</option><option>BTCUSD</option><option>Volatility 75</option></select></label><label>Result<select name="res"><option>Win</option><option>Loss</option><option>Break-even</option><option>No trade, waited</option></select></label></div>
-            <label>What did you learn?<input name="note" required placeholder="Waited for the retest instead of chasing"></label>
+            <div class="row2"><label>Emotion<select name="emotion"><option>Calm</option><option>FOMO</option><option>Revenge</option><option>Bored</option><option>Confident</option></select></label><label>R result<input type="number" name="r" step="0.01" value="0" required></label></div><label>What did you learn?<input name="note" required placeholder="Waited for the retest instead of chasing"></label>
             <button class="btn" type="submit" style="justify-self:start">Add to journal</button>
           </form>
           <ul class="jlist" data-at-journal></ul>
@@ -52,6 +52,7 @@
           <div data-at-orders></div>
         </section>
       </div>
+      <div data-trading-desk></div>
       <p class="t-small t-soft" style="margin:40px 0 0">Sample student area for the pitch. Signed in as a demo student; anything you order or apply for on this site appears here.</p>
     </div>
   </section>
@@ -65,5 +66,6 @@
 <script src="assets/js/store.js"></script>
 <script src="assets/js/desk.js"></script>
 <script src="assets/js/inner.js"></script>
+<script src="assets/js/ecosystem.js"></script>
 </body>
 </html>

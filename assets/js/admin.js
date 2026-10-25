@@ -88,7 +88,7 @@
         '<text x="' + (x + bw / 2) + '" y="' + (H + 48) + '" text-anchor="middle">' + m.label + (i === 5 ? ' so far' : '') + '</text>';
     }).join('') + '</svg>';
     var todo = [
-      [w.transfers.length + ' bank transfer' + (w.transfers.length === 1 ? '' : 's') + ' to confirm', money(w.transfers.reduce(function (a, o) { return a + o.usd; }, 0)) + ' waiting', '#payments', 'Confirm'],
+      [w.transfers.length + ' payment' + (w.transfers.length === 1 ? '' : 's') + ' to confirm', money(w.transfers.reduce(function (a, o) { return a + o.usd; }, 0)) + ' waiting', '#payments', 'Confirm'],
       [w.apps + ' mentorship application' + (w.apps === 1 ? '' : 's'), 'Two of six January seats left', '#mentorship', 'Review'],
       [w.enq + ' new enquir' + (w.enq === 1 ? 'y' : 'ies'), 'From the website, WhatsApp and Telegram', '#enquiries', 'Reply'],
       [due.length + ' renewals this week', 'The bot reminds them three days before', '#members', 'See them']
@@ -133,17 +133,17 @@
 
   V.payments = function () {
     var o = orders(), mon = months(2), cur = mon[1], prev = mon[0], w = waiting().transfers, q = state.pq.toLowerCase();
-    var by = { 'Mobile Money': 0, Card: 0, 'Bank transfer': 0 }, n = 0;
+    var by = { 'Mobile Money': 0, Card: 0, 'Bank transfer': 0, USDT: 0 }, n = 0;
     o.forEach(function (x) { if (x.date.slice(0, 7) === cur.key && x.status === 'Paid') { by[x.method]++; n++; } });
     var kmax = Math.max(cur.room, cur.course, cur.camp), list = o.filter(function (x) { return !q || (x.name + ' ' + x.ref).toLowerCase().indexOf(q) > -1; });
-    return head('Payments', 'Mobile Money, card and bank transfer, in one place', '') +
-      '<div class="hq-kpis hq-kpis--3">' + kpi('This month', money(cur.total), cur.count + ' payments') + kpi('Last month', money(prev.total), prev.count + ' payments') + kpi('Waiting for you', String(w.length), money(w.reduce(function (a, x) { return a + x.usd; }, 0)) + ' in bank transfers') + '</div>' +
+    return head('Payments', 'Mobile Money, card, bank transfer and USDT, in one place', '') +
+      '<div class="hq-kpis hq-kpis--3">' + kpi('This month', money(cur.total), cur.count + ' payments') + kpi('Last month', money(prev.total), prev.count + ' payments') + kpi('Waiting for you', String(w.length), money(w.reduce(function (a, x) { return a + x.usd; }, 0)) + ' awaiting payment') + '</div>' +
       '<div class="hq-grid">' +
       card('c--6', 'This month, by product', money(cur.total), '<div class="hbars">' + hbar('Trading Room', cur.room, kmax, money(cur.room)) + hbar('Courses', cur.course, kmax, money(cur.course)) + hbar('Bootcamps', cur.camp, kmax, money(cur.camp)) + '</div>') +
       card('c--6', 'How they pay', n + ' payments this month', '<div class="hbars">' + Object.keys(by).map(function (k) { return hbar(k, by[k], n, Math.round(by[k] / Math.max(1, n) * 100) + '%'); }).join('') + '</div>') +
-      card('', 'Bank transfers to confirm', 'Seats and memberships are held for 48 hours', w.length ? '<div class="rows">' + w.map(function (x) { var it = S.item(x.item) || { name: x.item }; return '<div class="row">' + who(x.name, it.name + ' · ' + x.ref + ' · ' + day(x.date)) + '<div class="row__r"><span class="amt">' + money(x.usd) + '</span><button type="button" class="b b--sm" data-act="recv" data-v="' + x.ref + '">Mark as received</button></div></div>'; }).join('') + '</div>' : '<p class="mut">All transfers are confirmed.</p>') +
+      card('', 'Bank and USDT payments to confirm', 'Seats and memberships are held for 48 hours', w.length ? '<div class="rows">' + w.map(function (x) { var it = S.item(x.item) || { name: x.item }; return '<div class="row">' + who(x.name, it.name + ' · ' + x.ref + ' · ' + day(x.date)) + '<div class="row__r"><span class="amt">' + money(x.usd) + '</span><button type="button" class="b b--sm" data-act="recv" data-v="' + x.ref + '">Mark as received</button></div></div>'; }).join('') + '</div>' : '<p class="mut">All transfers are confirmed.</p>') +
       '<section class="c" id="all"><div class="c__h"><h2>All payments</h2><label class="search"><span class="sr-only">Search payments</span><input type="search" data-q="pq" value="' + esc(state.pq) + '" placeholder="Search by name or reference"></label></div>' +
-      table([['Customer'], ['Reference', 'hide-ph'], ['Date'], ['Item'], ['Paid with', 'hide-ph'], ['Amount', 'r'], ['Status']], list.slice(0, state.pshow).map(function (x) { var it = S.item(x.item) || { name: x.item }; return { cells: [who(x.name, x.country || ''), '<span class="nw">' + x.ref + '</span>', '<span class="nw">' + day(x.date) + '</span>', it.name, x.method, '<span class="amt">' + money(x.usd) + '</span>', st(x.status === 'Paid' ? 'Paid' : 'Waiting', x.status === 'Paid' ? 'ok' : 'warn')] }; })) +
+      table([['Customer'], ['Reference', 'hide-ph'], ['Date'], ['Item'], ['Paid with'], ['Amount', 'r'], ['Status']], list.slice(0, state.pshow).map(function (x) { var it = S.item(x.item) || { name: x.item }; return { cells: [who(x.name, x.country || ''), '<span class="nw">' + x.ref + '</span>', '<span class="nw">' + day(x.date) + '</span>', it.name, x.method, '<span class="amt">' + money(x.usd) + '</span>', st(x.status === 'Paid' ? 'Paid' : 'Waiting', x.status === 'Paid' ? 'ok' : 'warn')] }; })) +
       (list.length > state.pshow ? '<button type="button" class="b b--soft more" data-act="pmore">Show more</button>' : '') + '</section></div>';
   };
 
@@ -151,7 +151,7 @@
     var all = setups(), open = all.filter(function (s) { return s.result === 'Open'; }), closed = all.filter(function (s) { return s.result !== 'Open' && daysTo(s.date) >= -30; });
     var wins = closed.filter(function (s) { return s.r > 0; }).length, loss = closed.filter(function (s) { return s.r < 0; }).length, be = closed.length - wins - loss, net = closed.reduce(function (a, s) { return a + s.r; }, 0);
     var P = ['XAUUSD', 'GBPJPY', 'GBPAUD', 'USDJPY', 'BTCUSD', 'Volatility 75'];
-    return head('Setups', 'Post once: it reaches the student area and the VIP room on Telegram', '') +
+    return head('Setups', 'Post once: it reaches the student area, the app and the VIP room on Telegram', '') +
       '<div class="hq-grid">' +
       card('c--5', 'Post a setup', 'Education, not advice', '<form class="f" data-setup>' +
         '<div class="f2"><label>Pair<select name="pair">' + P.map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select></label><label>Direction<span class="hseg" role="group">' + ['Buy', 'Sell'].map(function (d) { return '<button type="button" data-act="dir" data-v="' + d + '" aria-pressed="' + (state.dir === d) + '">' + d + '</button>'; }).join('') + '</span></label></div>' +
@@ -160,7 +160,7 @@
         '<button class="b" type="submit" style="justify-self:start">Send to members</button><p class="note" data-setup-msg>Members see it in the student area and on Telegram at once.</p></form>') +
       card('c--7', 'The last 30 days', 'Every result stays in the archive, losses included', '<div class="recs"><div><b>' + closed.length + '</b><span>Setups closed</span></div><div><b class="pos">' + wins + '</b><span>Reached a target</span></div><div><b class="neg">' + loss + '</b><span>Stopped out</span></div><div><b class="' + (net >= 0 ? 'pos' : 'neg') + '">' + (net >= 0 ? '+' : '−') + Math.abs(net) + 'R</b><span>Net, in units of risk</span></div></div>' +
         '<div class="strip" aria-label="Results, oldest to newest">' + closed.slice().reverse().map(function (s) { return '<i class="' + (s.r > 0 ? 'w' : s.r < 0 ? 'l' : 'e') + '" title="' + esc(s.pair + ' ' + s.result) + '"></i>'; }).join('') + '</div><p class="mut">Oldest to newest: green reached a target, rose was stopped, sand broke even (' + be + ').</p>') +
-      card('', 'Open setups', open.length + ' open', open.length ? '<div class="rows">' + open.map(function (s) { return '<div class="row"><div class="who"><span class="st ' + (s.dir === 'Buy' ? 'st--ok' : 'st--warn') + '">' + s.dir + '</span><div><strong>' + esc(s.pair) + '</strong><span>Entry ' + esc(s.entry) + ' · Stop ' + esc(s.stop) + ' · TP1 ' + esc(s.tp[0]) + ' · ' + day(s.date) + '</span></div></div><div class="row__r">' + [['TP1', 1, 'TP1 hit'], ['TP2', 2, 'TP2 hit'], ['Break-even', 0, 'Break-even'], ['Stopped', -1, 'Stopped']].map(function (r) { return '<button type="button" class="b b--soft b--sm" data-act="res" data-v="' + s.id + '|' + r[0] + '|' + r[1] + '">' + r[2] + '</button>'; }).join('') + '</div></div>'; }).join('') + '</div>' : '<p class="mut">Nothing open. Post a setup above.</p>') +
+      card('', 'Open setups', open.length + ' open', open.length ? '<div class="rows">' + open.map(function (s) { return '<div class="row"><div class="who"><span class="st ' + (s.dir === 'Buy' ? 'st--ok' : 'st--warn') + '">' + s.dir + '</span><div><strong>' + esc(s.pair) + '</strong><span>Entry ' + esc(s.entry) + ' · Stop ' + esc(s.stop) + ' · TP1 ' + esc(s.tp[0]) + ' · ' + day(s.date) + '</span></div></div><div class="row__r">' + '<button type="button" class="b b--sm" data-act="picture" data-v="' + esc(s.id) + '">Make a picture</button>' + [['TP1', 1, 'TP1 hit'], ['TP2', 2, 'TP2 hit'], ['Break-even', 0, 'Break-even'], ['Stopped', -1, 'Stopped']].map(function (r) { return '<button type="button" class="b b--soft b--sm" data-act="res" data-v="' + s.id + '|' + r[0] + '|' + r[1] + '">' + r[2] + '</button>'; }).join('') + '</div></div>'; }).join('') + '</div>' : '<p class="mut">Nothing open. Post a setup above.</p>') +
       card('', 'Archive', closed.length + ' in the last 30 days', table([['Pair'], ['Date'], ['Direction'], ['Entry', 'hide-ph'], ['Stop', 'hide-ph'], ['Target 1', 'hide-ph'], ['Result'], ['R', 'r']], closed.slice(0, 12).map(function (s) { return { cells: ['<strong>' + s.pair + '</strong>', day(s.date), s.dir, s.entry, s.stop, s.tp[0], st(s.result, s.r > 0 ? 'ok' : s.r < 0 ? 'warn' : 'dim'), '<span class="amt ' + (s.r > 0 ? 'pos' : s.r < 0 ? 'neg' : '') + '">' + (s.r > 0 ? '+' : s.r < 0 ? '−' : '') + Math.abs(s.r) + 'R</span>'] }; }))) +
       '</div>';
   };
@@ -179,7 +179,7 @@
     return head('Academy', students.length + ' students across four courses', '<a class="b b--soft" href="../academy.html">View the courses</a>') +
       '<div class="courses">' + cs + '</div>' +
       card('', 'Students', 'Finish the course, pass the plan review, get the certificate', table([['Student'], ['Course'], ['Progress'], ['Certificate']], rows.map(function (m) {
-        var done = m.progress >= 100, sent = d.own.certs[m.id];
+        var done = m.progress >= 100, sent = d.own.certs[m.id] || S.certificates().some(function(c){return c.member===m.id;});
         return { cells: [who(m.name, m.country), name[m.course], '<span style="display:flex;align-items:center;gap:10px;justify-content:inherit"><span class="meter" style="width:120px"><span style="width:' + m.progress + '%"></span></span>' + m.progress + '%</span>', done ? (sent ? st('Sent', 'ok') : '<button type="button" class="b b--sm" data-act="cert" data-v="' + m.id + '">Issue certificate</button>') : st('In progress', 'dim')] };
       })));
   };
@@ -272,10 +272,27 @@
       '</div>';
   };
 
+
+  /* Brief 5: connected business tools. */
+  V.referrals = function(){var rows=S.referrals().filter(function(r){return r.friends>0;}).sort(function(a,b){return b.friends-a.friends;}), friends=rows.reduce(function(n,r){return n+r.friends;},0),monthsGiven=rows.reduce(function(n,r){return n+r.months;},0);return head('Referrals','A friend joins. A member gets a free month.')+'<div class="hq-kpis hq-kpis--3">'+kpi('Members referring',rows.length)+kpi('Friends joined',friends)+kpi('Free months given',monthsGiven)+'</div>'+card('','Top referrers','Sample members, ranked by friends joined',table([['Member'],['Invite code'],['Friends joined'],['Free months given']],rows.map(function(r){return {cells:[who(r.name),esc(r.code),r.friends,r.months]};})));};
+  V.brokers = function(){var b=S.db().brokers;return head('Broker links','Last 30 days · Sample partner links')+card('','Partner performance','Track which partner pays best','<p class="mut">Sample tracking figures. Partner destinations are placeholders.</p><div class="hbars">'+b.map(function(x){return '<div class="row"><a class="link" href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.name)+'</a><span>'+x.clicks+' clicks · '+x.signups+' sign-ups · '+(x.signups/x.clicks*100).toFixed(1)+'% conversion</span></div>'+hbar('Clicks',x.clicks,Math.max.apply(null,b.map(function(p){return p.clicks;})))+hbar('Sign-ups',x.signups,Math.max.apply(null,b.map(function(p){return p.signups;})))+hbar(x.name+' conversion',x.signups/x.clicks,1,(x.signups/x.clicks*100).toFixed(1)+'%');}).join('')+'</div>');};
+  V.app = function(){var d=S.db();return head('App','Members buy on the website and use everything in the app.',st('Sample · coming soon','gold'))+'<div class="hq-kpis hq-kpis--3">'+kpi('Android installs',d.app.android)+kpi('iPhone installs',d.app.iphone)+kpi('Active this week',d.app.active)+'</div>'+card('','Push notification','Setups posted in Setups go to the app automatically.','<form class="f" data-push><label>Title<input name="title" maxlength="80" required></label><label>Message<textarea name="message" maxlength="500" required></textarea></label><label>Audience<select name="audience"><option>All members</option><option>Trading Room</option><option>Academy students</option></select></label><button class="b" type="submit">Send notification</button><p class="note">Demo delivery, saved in this browser.</p></form>')+card('','Sent',d.own.pushes.length+' notifications',d.own.pushes.length?'<div class="rows">'+d.own.pushes.map(function(p){return '<article class="row"><div><strong>'+esc(p.title)+'</strong><p>'+esc(p.msg)+'</p><p class="mut">'+esc(p.aud)+' · '+esc(new Date(p.at).toLocaleString())+(p.automatic?' · Automatic setup':'')+'</p></div>'+st('Sent','ok')+'</article>';}).join('')+'</div>':'<p class="mut">No notifications sent yet.</p>');};
+  var originalToday=V.today;
+  V.today=function(){var d=S.db(),ms=members(),week=orders().filter(function(o){return o.status==='Paid'&&daysTo(o.date)>=-7;}),best=d.sess.slice().sort(function(a,b){return b.came-a.came;})[0],due=ms.filter(function(m){return m.active&&daysTo(m.renews)>=0&&daysTo(m.renews)<=7;}).length;return originalToday()+card('','Monday report','A weekly message for Zira','<div class="sw"><p>Send my Monday report<span>WhatsApp · Every Monday, 08:00 Accra · Sample preview</span></p><button class="tgl" role="switch" aria-label="Monday report" aria-checked="'+d.own.monday+'" data-act="monday"></button></div><div class="chat"><div class="chat__h"><strong>Zira HQ · Your week</strong></div><div class="msg-b msg-b--me"><p>Good morning, Zira.</p><p>New members: '+ms.filter(function(m){return daysTo(m.joined)>=-7;}).length+'</p><p>Money in: '+money(week.reduce(function(n,o){return n+o.usd;},0))+'</p><p>Renewals due: '+due+'</p><p>Best content: '+esc(best.topic)+' ('+best.came+' attended)</p><p>Next live: '+esc(nextLive().toLocaleString('en-GB',{timeZone:'Africa/Accra'}))+' Accra</p><small>Last 7 days · preview</small></div></div>');};
+  var originalAcademy=V.academy;
+  V.academy=function(){var certs=S.certificates();return originalAcademy()+card('','Certificates issued',certs.length+' verified records',table([['Student'],['Course'],['Date'],['Verify code']],certs.map(function(c){return {cells:[esc(c.name),esc(c.course),esc(c.date),'<a class="link" href="../verify.html?code='+esc(c.code)+'">'+esc(c.code)+'</a>']};})));};
+  var originalLive=V.live;
+  V.live=function(){return originalLive()+card('','Class reminders',S.reminderCount()+' members switched reminders on','<p>Reminders go out one hour before, on Telegram and WhatsApp.</p>');};
+  function signalPicture(id){var s=setups().find(function(s){return s.id===id;});if(!s)return;openDrawer('<h2>Signal picture</h2><p class="mut">1080 × 1350 · Education, not advice</p><canvas data-signal-canvas width="1080" height="1350" role="img" aria-label="'+esc(s.dir+' '+s.pair+' setup picture')+'"></canvas><a class="b" data-picture-download download="zira-'+esc(s.pair)+'-'+s.date+'.png">Download PNG</a><p data-picture-status role="status"></p>');var canvas=$('[data-signal-canvas]'),ctx=canvas.getContext('2d');if(!ctx){$('[data-picture-status]').textContent='Canvas is unavailable in this browser.';return;}
+    function draw(){if(!canvas.isConnected)return;ctx.fillStyle='#062a20';ctx.fillRect(0,0,1080,1350);ctx.fillStyle='#dcc391';ctx.fillRect(80,80,6,1190);ctx.fillStyle='#e8b9b0';ctx.font='600 80px Montserrat';ctx.fillText('ZIRA',130,190);ctx.font='500 25px Montserrat';ctx.fillText('THE TRADING ROOM / SAMPLE SETUP',130,245);ctx.fillStyle='#f3eff0';ctx.font='600 85px Montserrat';ctx.fillText(s.pair,130,405,850);ctx.font='500 42px Montserrat';ctx.fillText(s.dir.toUpperCase(),130,480);var lines=[['ENTRY',s.entry],['STOP LOSS',s.stop],['TARGET 1',s.tp[0]||'Not set'],['TARGET 2',s.tp[1]||'Not set'],['TARGET 3',s.tp[2]||'Not set']];lines.forEach(function(l,i){var y=610+i*105;ctx.fillStyle='#dcc391';ctx.font='500 22px Montserrat';ctx.fillText(l[0],130,y);ctx.fillStyle='#f3eff0';ctx.font='500 42px Montserrat';ctx.fillText(String(l[1]),530,y,450);});ctx.fillStyle='#e8b9b0';ctx.font='500 28px Montserrat';ctx.fillText(s.date,130,1190);ctx.fillText('Education, not advice',130,1245);try{$('[data-picture-download]').href=canvas.toDataURL('image/png');}catch(e){$('[data-picture-status]').textContent='Could not export this picture. Please try again.';}}
+    draw();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+  }
+  document.addEventListener('submit',function(e){var f=e.target;if(!f.hasAttribute('data-push'))return;e.preventDefault();var title=f.elements.title.value.trim(),msg=f.elements.message.value.trim();if(!title||!msg)return;save(function(d){d.own.pushes.unshift({title:title,msg:msg,aud:f.elements.audience.value,at:new Date().toISOString()});});UI.toast('Notification saved to Sent');render();});
+
   /* ---------------- the shell: nav, routing, drawer ---------------- */
-  var NAV = [['Run the business', [['today', 'Today'], ['members', 'Members'], ['payments', 'Payments'], ['enquiries', 'Enquiries']]],
+  var NAV = [['Run the business', [['today', 'Today'], ['members', 'Members'], ['payments', 'Payments'], ['enquiries', 'Enquiries'], ['referrals', 'Referrals'], ['brokers', 'Broker links']]],
     ['Teach', [['setups', 'Setups'], ['academy', 'Academy'], ['live', 'Live sessions'], ['mentorship', 'Mentorship'], ['bootcamps', 'Bootcamps']]],
-    ['Automate', [['telegram', 'Telegram bot']]]];
+    ['Automate', [['telegram', 'Telegram bot'], ['app', 'App']]]];
   var TITLE = {}; NAV.forEach(function (g) { g[1].forEach(function (i) { TITLE[i[0]] = i[1]; }); });
   function cur() { var h = location.hash.slice(1); return V[h] ? h : 'today'; }
   function drawNav() {
@@ -284,7 +301,8 @@
   }
   function render(fresh) {
     var v = cur(), y = window.scrollY;
-    viewEl.innerHTML = V[v]();
+    try { viewEl.innerHTML = V[v](); } catch(e) { viewEl.innerHTML = head('Could not load this view', 'Please reload to try again.'); console.error(e); }
+    viewEl.querySelectorAll('.c,.kpi,.course-c').forEach(function(el){el.setAttribute('data-reveal','');}); UI.reveal(viewEl);
     drawNav();
     document.title = TITLE[v] + ' | Zira HQ';
     if (fresh) { viewEl.classList.remove('is-in'); void viewEl.offsetWidth; viewEl.classList.add('is-in'); window.scrollTo(0, 0); }
@@ -312,7 +330,9 @@
     if (row && !e.target.closest('button, a')) { var o = row.getAttribute('data-open'); if (o.indexOf('m:') === 0) memberDrawer(o.slice(2)); return; }
     var b = e.target.closest('[data-act]'); if (!b) return;
     var a = b.getAttribute('data-act'), v = b.getAttribute('data-v') || '', p = v.split('|');
-    if (a === 'mf') { state.mf = v; state.mshow = 15; }
+    if (a === 'picture') { signalPicture(v); return; }
+    else if(a === 'monday') { save(function(d){d.own.monday = !d.own.monday;}); }
+    else if (a === 'mf') { state.mf = v; state.mshow = 15; }
     else if (a === 'mmore') state.mshow += 15;
     else if (a === 'pmore') state.pshow += 15;
     else if (a === 'ef') state.ef = v;
@@ -321,7 +341,7 @@
     else if (a === 'camp') state.camp = v;
     else if (a === 'recv') { save(function (d) { d.own.received[v] = true; }); UI.toast('Payment ' + v + ' marked as received'); }
     else if (a === 'res') { save(function (d) { d.own.results[p[0]] = [p[1], +p[2]]; }); UI.toast('Result saved to the archive'); }
-    else if (a === 'cert') { save(function (d) { d.own.certs[v] = true; }); UI.toast('Certificate sent'); }
+    else if (a === 'cert') { save(function (d) { d.own.certs[v] = true; var m=d.members.find(function(m){return m.id===v;}); if(m && !S.certificates().some(function(c){return c.member===v;})) { var c=KF.courses.find(function(c){return c.id===m.course;}); d.own.issued.push({member:v,name:m.name,course:c.name,date:TODAY,code:'ZF-CERT-'+(Number(v.slice(1))+1000)}); } }); UI.toast('Certificate sent'); }
     else if (a === 'remind') { save(function (d) { d.own.reminders.live = true; }); UI.toast('Reminder sent to the VIP room'); }
     else if (a === 'app') { S.setApp(p[0], p[1]); UI.toast(p[1] === 'Declined' ? 'Application declined, with a kind note' : p[1] === 'Accepted' ? 'Seat confirmed. Welcome pack sent' : 'Intro call booked'); }
     else if (a === 'in') { save(function (d) { d.own.checkin[v] = !d.own.checkin[v]; }); }

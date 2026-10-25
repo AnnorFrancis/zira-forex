@@ -42,7 +42,7 @@
       var riskMoney = B * R / 100;
       var stopPips = Math.abs(s.entry - s.stop) / s.pip;
       var perLot = stopPips * s.pipValueUSD;
-      var lots = perLot > 0 ? Math.floor((riskMoney / perLot) * 100) / 100 : 0;
+      var lots = KF.lotSize(B, R, stopPips, s.pipValueUSD);
       var actual = lots * perLot;
       var sell = s.dir === 'Sell';
 

@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   var KF = window.KF;
-  var KEY = 'zf.db.v1';
+  var KEY = 'zf.db.v2', memoryDB = null;
   function rng(seed) { return function () { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }; }
   function pick(r, a) { return a[Math.floor(r() * a.length)]; }
   function iso(d) { return d.toISOString().slice(0, 10); }
@@ -42,7 +42,7 @@
       var d = addDays(today, -Math.floor(-Math.log(1 - r() * SPAN) / LAM));
       var m = members[Math.floor(r() * members.length)];
       var it = r() < 0.66 ? 'room-' + m.plan : (r() < 0.7 ? 'course-' + pick(r, KF.courses).id : 'camp-' + pick(r, KF.tour).id + (r() < 0.25 ? '-vip' : ''));
-      orders.push({ ref: 'ZF-' + (240000 + j * 7 + Math.floor(r() * 7)), date: iso(d), item: it, name: m.name, country: m.country, usd: cat[it].usd, method: pick(r, ['Mobile Money', 'Mobile Money', 'Card', 'Card', 'Bank transfer']), status: 'Paid' });
+      orders.push({ ref: 'ZF-' + (240000 + j * 7 + Math.floor(r() * 7)), date: iso(d), item: it, name: m.name, country: m.country, usd: cat[it].usd, method: j % 19 === 0 ? 'USDT' : pick(r, ['Mobile Money', 'Mobile Money', 'Card', 'Card', 'Bank transfer']), status: 'Paid' });
     }
     var goals = ['Stop revenge trading after a loss', 'Pass a prop firm challenge', 'Trade gold with a written plan', 'Size positions properly', 'Trade around a full-time job', 'Stop overtrading on Fridays'];
     for (var k = 0; k < 14; k++) {
@@ -88,19 +88,26 @@
       att[t.id] = [];
       for (var a = 0; a < t.seats - t.left; a++) att[t.id].push({ id: t.id + '-' + a, name: pick(r, FIRST) + ' ' + pick(r, LAST), seat: r() < 0.24 ? 'VIP' : 'Standard', paid: r() < 0.88 ? 'Paid' : 'Deposit' });
     });
-    return { seeded: iso(today), members: members, orders: orders, apps: apps, hist: hist, enq: enq, sess: sess, att: att, own: blank() };
+    members[0].name = 'Ama Mensah'; members[0].course = 'foundations'; members[0].progress = 100;
+    var certificates = [0, 1, 2].map(function (i) { var m = members[i]; m.course = KF.courses[i].id; m.progress = 100; return { member: m.id, name: m.name, course: KF.courses[i].name, date: iso(addDays(today, -14-i)), code: 'ZF-CERT-' + (1001+i) }; });
+    var referrals = members.map(function (m, i) { return { member: m.id, name: m.name, code: 'ZF-' + m.id, friends: Math.max(0,8-i), months: Math.max(0,8-i) }; });
+    var brokers = [{name:'Partner A',url:'https://example.com/broker-a',clicks:420,signups:42},{name:'Partner B',url:'https://example.com/broker-b',clicks:280,signups:21},{name:'Partner C',url:'https://example.com/broker-c',clicks:160,signups:8}];
+    members.forEach(function(m,i){ m.liveReminder = i % 3 === 0; });
+    return { certificates: certificates, referrals: referrals, brokers: brokers, app: {android:184,iphone:126,active:218}, seeded: iso(today), members: members, orders: orders, apps: apps, hist: hist, enq: enq, sess: sess, att: att, own: blank() };
   }
-  function blank() { return { orders: [], apps: [], journal: [], setups: [], results: {}, received: {}, enq: {}, tg: {}, checkin: {}, certs: {}, bot: {}, casts: [], reminders: {} }; }
+  function blank() { return { orders: [], apps: [], journal: [], setups: [], results: {}, received: {}, enq: {}, tg: {}, checkin: {}, certs: {}, bot: {}, casts: [], reminders: {}, liveReminders: {}, pushes: [], issued: [], monday: true }; }
 
   function load() {
     var db = null;
     try { db = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+    if (!db) { try { var legacy = JSON.parse(localStorage.getItem('zf.db.v1')); if (legacy) { db = seed(); db.own = legacy.own || blank(); save(db); } } catch (e) {} }
+    if (!db && memoryDB) db = memoryDB;
     var today = iso(new Date());
     if (!db || db.seeded !== today) { var own = db && db.own; db = seed(); if (own) db.own = own; save(db); }
     var b = blank(); for (var k in b) if (!(k in db.own)) db.own[k] = b[k];
     return db;
   }
-  function save(db) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+  function save(db) { memoryDB = db; try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
 
   var S = window.KFStore = {
     db: load,
@@ -110,7 +117,7 @@
     placeOrder: function (o) {
       var db = load();
       var ref = 'ZF-' + String(Date.now()).slice(-6);
-      var rec = { ref: ref, date: iso(new Date()), item: o.item, name: o.name, email: o.email, wa: o.wa, country: o.country, usd: o.usd, method: o.method, status: o.method === 'Bank transfer' ? 'Awaiting transfer' : 'Paid', own: true };
+      var rec = { ref: ref, date: iso(new Date()), item: o.item, name: o.name, email: o.email, wa: o.wa, country: o.country, usd: o.usd, method: o.method, referral: o.referral || null, status: (o.method === 'Bank transfer' || o.method === 'USDT') ? 'Awaiting transfer' : 'Paid', own: true };
       db.own.orders.unshift(rec); save(db); return rec;
     },
     apply: function (a) {
@@ -120,8 +127,12 @@
       db.own.apps.unshift(rec); save(db); return rec;
     },
     journal: function (entry) { var db = load(); if (entry) { db.own.journal.unshift(Object.assign({ date: iso(new Date()) }, entry)); save(db); } return db.own.journal; },
-    postSetup: function (s) { var db = load(); db.own.setups.unshift(Object.assign({ at: new Date().toISOString() }, s)); save(db); return db.own.setups; },
-    allOrders: function () { var db = load(); return db.own.orders.concat(db.orders).sort(function (a, b) { return a.date < b.date ? 1 : -1; }); },
+    postSetup: function (s) { var db = load(); db.own.setups.unshift(Object.assign({ at: new Date().toISOString() }, s)); db.own.pushes.unshift({ title: s.dir + ' ' + s.pair, msg: 'Entry ' + s.entry + ' / Stop ' + s.stop + ' / Targets ' + [s.tp, s.tp2, s.tp3].filter(Boolean).join(', '), aud: 'Trading Room', at: new Date().toISOString(), automatic: true }); save(db); return db.own.setups; },
+    referrals: function () { var d=load(); return d.referrals.map(function(r){var extra=d.own.orders.filter(function(o){return o.referral===r.code && /^room-/.test(o.item) && (o.status==='Paid'||d.own.received[o.ref]);}).length;return Object.assign({},r,{friends:r.friends+extra,months:r.months+extra});}); },
+    certificates: function () { var d = load(); return d.certificates.concat(d.own.issued).concat(d.members.filter(function(m){ return d.own.certs[m.id] && !d.certificates.concat(d.own.issued).some(function(c){return c.member === m.id;}); }).map(function(m){var c = KF.courses.filter(function(c){return c.id === m.course;})[0]; return {member:m.id,name:m.name,course:c ? c.name : 'Foundations',date:d.seeded,code:'ZF-CERT-'+(Number(m.id.slice(1))+1000)};})); },
+    reminderCount: function () { var d=load(); return d.members.filter(function(m){return m.id in d.own.liveReminders ? d.own.liveReminders[m.id] : m.liveReminder;}).length; },
+    history: function () { var d=load(); return d.own.setups.map(function(s){return {id:'K'+s.at,date:s.at.slice(0,10),pair:s.pair,dir:s.dir,entry:s.entry,stop:s.stop,tp:[s.tp,s.tp2||'',s.tp3||''],result:'Open',r:0};}).concat(d.hist).map(function(s){var r=d.own.results[s.id];return r ? Object.assign({},s,{result:r[0],r:r[1]}) : s;}); },
+    allOrders: function () { var db = load(); return db.own.orders.concat(db.orders).map(function(o){return db.own.received[o.ref] ? Object.assign({},o,{status:'Paid'}) : o;}).sort(function (a, b) { return a.date < b.date ? 1 : -1; }); },
     allApps: function () { var db = load(); return db.own.apps.concat(db.apps).sort(function (a, b) { return a.date < b.date ? 1 : -1; }); },
     setApp: function (ref, status) {
       var db = load(); [db.own.apps, db.apps].forEach(function (l) { l.forEach(function (a) { if (a.ref === ref) a.status = status; }); }); save(db);

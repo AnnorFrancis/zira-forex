@@ -20,7 +20,7 @@
   }
   function road(frames) {
     var el = $('[data-road-list]'); if (!el) return;
-    el.innerHTML = frames.map(function (f) { return '<figure><img src="' + UI.img(f[0], 'thumb') + '" alt="' + f[1] + '" loading="lazy" draggable="false"></figure>'; }).join('');
+    el.innerHTML = frames.map(function (f) { return '<figure><img src="' + UI.img(f[0], 'thumb') + '" alt="' + (KF.photoAlt[f[0]] || f[1]) + '" loading="lazy" draggable="false"></figure>'; }).join('');
     var c = $('[data-road-count]'); if (c) c.textContent = frames.length + ' frames';
     var down = false, sx = 0, sl = 0;
     el.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = el.scrollLeft; el.classList.add('is-drag'); el.setPointerCapture(e.pointerId); });
@@ -65,7 +65,7 @@
       return '<li class="up" data-reveal style="--h:' + s[2] + '"><span class="up__candle" aria-hidden="true"><i></i></span><span class="up__name">' + s[0] + '</span><span class="up__len t-soft">' + s[1] + '</span></li>';
     }).join('');
     $('[data-courses]').innerHTML = KF.courses.map(function (c) {
-      return '<article class="course" id="' + c.id + '" data-reveal><figure class="course__pic"><img src="' + UI.img(c.img) + '" alt="' + c.name + '" loading="lazy"></figure>' +
+      return '<article class="course" id="' + c.id + '" data-reveal><figure class="course__pic"><img src="' + UI.img(c.img) + '" alt="' + KF.photoAlt[c.img] + '" loading="lazy"></figure>' +
         '<div class="course__main"><h3>' + c.name + '</h3><p class="meta">' + c.level + ' &middot; ' + c.length + '</p><p>' + c.line + '</p><ul class="course__mods">' + c.modules.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
         '<div class="course__buy"><span class="plan__price">' + m(c.usd) + '</span><span class="t-small t-soft">One payment, lifetime access</span><a class="btn" data-magnetic href="checkout.html?item=course-' + c.id + '">Enrol</a></div></article>';
     }).join('');
@@ -144,13 +144,13 @@
     timer = setInterval(function () { if (!held && !UI.reduced) setCity(KF.tour[(i + 1) % KF.tour.length].id); }, 4200);
     $$('.camp', list).forEach(function (el) { el.addEventListener('pointerenter', function () { setCity(el.getAttribute('data-city')); }); });
     if (location.hash) { var id = location.hash.slice(1); if (KF.tour.some(function (t) { return t.id === id; })) setCity(id); }
-    road([['event-1', 'Sample bootcamp photo'], ['portrait-13', 'Your photo'], ['portrait-1', 'Your photo'], ['portrait-21', 'Your photo'], ['portrait-3', 'Your photo'], ['portrait-17', 'Your photo'], ['portrait-11', 'Your photo']]);
+    road([['event-1', 'Speaker at an event'], ['portrait-13', 'Community photograph'], ['portrait-1', 'Community photograph'], ['portrait-21', 'Community photograph'], ['portrait-3', 'Community photograph'], ['portrait-17', 'Community photograph'], ['portrait-11', 'Community photograph']]);
   }
 
   /* ---------- About ---------- */
   function about() {
     lists();
-    road([['portrait-20', 'Your photo'], ['portrait-16', 'Your photo'], ['portrait-15', 'Your photo'], ['portrait-18', 'Your photo'], ['portrait-6', 'Your photo'], ['portrait-13', 'Your photo'], ['portrait-19', 'Your photo'], ['portrait-17', 'Your photo']]);
+    road([['portrait-20', 'Community photograph'], ['portrait-16', 'Community photograph'], ['portrait-15', 'Community photograph'], ['portrait-18', 'Community photograph'], ['portrait-6', 'Community photograph'], ['portrait-13', 'Community photograph'], ['portrait-19', 'Community photograph'], ['portrait-17', 'Community photograph']]);
     var f = $('[data-found-form]');
     f.addEventListener('submit', function (e) {
       e.preventDefault(); var msg = $('[data-found-msg]');
@@ -181,7 +181,7 @@
     function payDetail() {
       var v = method();
       detail.innerHTML = v === 'Mobile Money' ? '<label>Mobile Money number <span class="hint">You will get a prompt to approve on your phone</span><input name="momo" type="tel" inputmode="tel" placeholder="024 000 0000"></label>'
-        : v === 'Card' ? '<p class="t-small t-soft">You will finish on the payment provider&rsquo;s secure page. This site never sees your card.</p>'
+        : v === 'USDT' ? '<p class="t-small t-soft">Network TRC20. Your order is confirmed when the payment arrives. Demo checkout: no live wallet is connected.</p>' : v === 'Card' ? '<p class="t-small t-soft">You will finish on the payment provider&rsquo;s secure page. This site never sees your card.</p>'
           : '<p class="t-small t-soft">You will get the account details and a payment reference. Your seat or membership is held for 48 hours.</p>';
     }
     form.addEventListener('change', function (e) { if (e.target.name === 'method') payDetail(); });
@@ -195,11 +195,11 @@
       msg.textContent = '';
       var btn = $('[data-pay]'); btn.disabled = true; btn.textContent = method() === 'Mobile Money' ? 'Waiting for approval on your phone…' : 'Processing…';
       setTimeout(function () {
-        var rec = S.placeOrder({ item: it.id, name: form.name.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim(), country: form.country.value.trim(), usd: it.usd, method: method() });
+        var rec = S.placeOrder({ item: it.id, name: form.name.value.trim(), email: form.email.value.trim(), wa: form.wa.value.trim(), country: form.country.value.trim(), usd: it.usd, method: method(), referral: q.get('ref') });
         form.hidden = true;
         var done = $('[data-co-done]'); done.hidden = false;
         done.innerHTML = '<h2 class="t-head" style="margin-top:32px">' + (rec.status === 'Paid' ? 'You&rsquo;re in, ' + UI.esc(rec.name.split(' ')[0]) + '.' : 'Order held, ' + UI.esc(rec.name.split(' ')[0]) + '.') + '</h2>' +
-          '<p class="t-lead" style="margin-top:16px">' + (rec.status === 'Paid' ? 'Your receipt and ' + (it.kind === 'room' ? 'Telegram invite' : it.kind === 'camp' ? 'ticket' : 'course access') + ' are on their way to ' + UI.esc(rec.email) + '.' : 'Transfer $' + fmt(it.usd) + ' with the reference below within 48 hours.') + '</p>' +
+          '<p class="t-lead" style="margin-top:16px">' + (rec.status === 'Paid' ? 'Your receipt and ' + (it.kind === 'room' ? 'Telegram invite' : it.kind === 'camp' ? 'ticket' : 'course access') + ' are on their way to ' + UI.esc(rec.email) + '.' : rec.method === 'USDT' ? 'Your USDT order is awaiting payment on TRC20. It is confirmed when the payment arrives. This demo does not collect crypto.' : 'Transfer $' + fmt(it.usd) + ' with the reference below within 48 hours.') + '</p>' +
           '<div class="slip" data-ui style="margin:36px 0 0;width:min(100%,470px)"><div class="slip__head"><span class="slip__brand">ZIRAFOREX</span><span class="slip__meta">Receipt<br>' + rec.date + '</span></div>' +
           '<div class="row"><span>Reference</span><span class="dots"></span><span class="v">' + rec.ref + '</span></div><div class="row"><span>' + it.name + '</span><span class="dots"></span><span class="v">$' + fmt(it.usd) + '</span></div>' +
           '<div class="row"><span>Paid with</span><span class="dots"></span><span class="v">' + rec.method + '</span></div><div class="slip__total"><span>Status</span><strong>' + rec.status + '</strong></div></div>' +
@@ -215,7 +215,7 @@
     var now = new Date(), h = now.getHours();
     $('[data-at-date]').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
     $('[data-at-hello]').textContent = (h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening') + ', Ama';
-    var db = S.db(), mine = db.own.orders;
+    var db = S.db(), mine = S.allOrders().filter(function(o){return o.own;});
     var roomO = mine.filter(function (o) { return /^room-/.test(o.item); })[0];
     var plan = roomO ? S.item(roomO.item) : S.item('room-month');
     $('[data-at-plan]').textContent = plan.name.replace('Trading Room, ', 'Trading Room, ');
@@ -259,11 +259,11 @@
     function journal() {
       var j = S.journal();
       if (!j.length) j = [{ date: S.iso(new Date(Date.now() - 86400000)), pair: 'XAUUSD', res: 'No trade, waited', note: 'No retest at London open, so no trade. Boredom is not a setup.' }];
-      jl.innerHTML = j.slice(0, 5).map(function (x) { return '<li><span class="num t-small t-soft">' + x.date + '</span><strong>' + UI.esc(x.pair) + ' &middot; ' + UI.esc(x.res) + '</strong><span>' + UI.esc(x.note) + '</span></li>'; }).join('');
+      jl.innerHTML = j.slice(0, 5).map(function (x) { return '<li><span class="num t-small t-soft">' + x.date + '</span><strong>' + UI.esc(x.pair) + ' &middot; ' + UI.esc(x.res) + (x.emotion ? ' / ' + UI.esc(x.emotion) + ' / ' + Number(x.r || 0) + 'R' : '') + '</strong><span>' + UI.esc(x.note) + '</span></li>'; }).join('');
     }
     journal();
     var jf = $('[data-at-jform]');
-    jf.addEventListener('submit', function (e) { e.preventDefault(); if (!jf.note.value.trim()) return; S.journal({ pair: jf.pair.value, res: jf.res.value, note: jf.note.value.trim() }); jf.reset(); journal(); UI.toast('Added to your journal'); });
+    jf.addEventListener('submit', function (e) { e.preventDefault(); if (!jf.note.value.trim()) return; S.journal({ pair: jf.pair.value, res: jf.res.value, note: jf.note.value.trim(), emotion: jf.emotion.value, r: Number(jf.r.value) }); jf.reset(); journal(); document.dispatchEvent(new Event('journalchange')); UI.toast('Added to your journal'); });
     // orders, tickets and applications
     var apps = db.own.apps;
     var rows = mine.map(function (o) { var it = S.item(o.item) || { name: o.item }; return '<div class="row"><span>' + it.name + ' <span class="t-soft">' + o.ref + '</span></span><span class="dots"></span><span class="v">' + o.status + '</span></div>'; }).join('') +

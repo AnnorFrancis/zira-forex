@@ -243,3 +243,11 @@ body.hq { background: var(--pearl); color: var(--ink); }
   .row__r { flex-wrap: wrap; }
   .mchart text { font-size: 22px; }
 }
+/* cards placed straight in the view (not inside .hq-grid) take the full width instead of creating columns */
+.hq-view > .c { grid-column: 1 / -1; }
+.hq-view > section.c .chat, .hq-view > section.c .msg-b { max-width: 100%; }
+@media (max-width: 640px) {
+  .row__r { flex: 1 1 100%; flex-wrap: wrap; justify-content: flex-start; min-width: 0; }
+  .c, .c * { min-width: 0; }
+  .c input, .c textarea, .c select { max-width: 100%; }
+}

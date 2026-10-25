@@ -180,11 +180,11 @@
       '<div class="foot__top"><div class="foot__inv"><h2 data-split>Trade with me.</h2><p>See you in the community.</p>' +
       '<a class="btn" data-magnetic href="' + root + 'trading-room.html#join">Join the Trading Room</a></div>' +
       '<div class="foot__links">' + s.map(function (x) { return '<a class="link" href="' + x.url + '" target="_blank" rel="noopener">' + x.label + ' <span class="t-soft">' + x.count + '</span></a>'; }).join('') +
-      '<a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
+      '<a class="link" href="' + root + 'results.html">Track record</a><a class="btn" href="' + root + 'app.html">Get the app</a><a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
       '<p class="foot__risk"><strong>Risk warning.</strong> ' + KF.risk + '</p>' +
       '<div class="foot__legal"><span>&copy; 2026 ' + KF.brand.academy + ', ' + KF.brand.city + '</span>' +
       '<nav aria-label="Legal"><a class="link" href="' + root + 'policies.html#risk">Risk disclosure</a><a class="link" href="' + root + 'policies.html#terms">Terms</a><a class="link" href="' + root + 'policies.html#refunds">Refunds</a><a class="link" href="' + root + 'policies.html#privacy">Privacy</a><a class="link" href="' + root + 'admin/index.html">Zira HQ</a></nav>' +
-      '<span class="t-soft">Sample website by Perkins Creative</span><span class="t-soft">Zira Forex is a sample brand; names, figures and photos are placeholders.</span></div></div>' +
+      '<span class="t-soft">Sample website by Perkins Creative</span><span class="t-soft">Zira Forex is a sample brand; names and figures are fictional; photographs illustrate the sample.</span></div></div>' +
       '<div class="foot__name" aria-hidden="true"><span>ZIRA</span></div></footer>';
   }
 

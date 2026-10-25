@@ -936,3 +936,41 @@ h1, h2, h3, h4 { overflow-wrap: break-word; }
   .field input { min-width: 0; width: 100%; }
   .btn { padding-left: 18px; padding-right: 18px; }
 }
+
+/* Brief 5: additive ecosystem screens, using the existing type and colour roles. */
+.eco-page { padding-top:calc(var(--nav-h) + 60px); }
+.eco-intro { display:grid; gap:24px; max-width:850px; margin-bottom:44px; justify-items:start; }
+.eco-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.eco-stats { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.eco-card { min-width:0; padding:28px; border:1px solid rgba(6,42,32,.12); border-radius:14px; background:var(--paper); color:var(--ink); display:grid; gap:18px; align-content:start; overflow-wrap:anywhere; }
+.eco-card .t-soft { color:var(--ink-soft); }
+.eco-card .btn { --b-bg:var(--malachite); --b-fg:var(--pearl); justify-self:start; }
+.eco-card-head { display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+.eco-note { margin:24px 0; }
+.eco-filters { flex-wrap:wrap; margin:24px 0; }
+.eco-strip { display:flex; gap:5px; flex-wrap:wrap; margin:22px 0 12px; }
+.eco-strip span { width:25px; min-height:30px; border-radius:4px; text-align:center; font-size:13px; padding:5px 0; color:var(--deep); }
+.eco-strip .win { background:#b6dfce; } .eco-strip .loss { background:var(--rose); } .eco-strip .neutral { background:var(--champagne); }
+.eco-archive { display:grid; gap:16px; }
+.eco-levels { display:grid; grid-template-columns:1fr 1fr 2fr 1fr .5fr; gap:18px; }
+.eco-levels dt { font-size:13px; color:var(--ink-soft); } .eco-levels dd { margin:5px 0 0; font-variant-numeric:tabular-nums; }
+.eco-app-layout { display:grid; grid-template-columns:minmax(280px,1fr) minmax(0,1.2fr); gap:70px; align-items:center; }
+.eco-phone { width:min(320px,100%); min-height:570px; margin:auto; border:9px solid var(--deep); border-radius:44px; padding:24px 22px; box-shadow:0 25px 60px -30px var(--deep); position:relative; }
+.eco-phone-top { display:flex; justify-content:space-between; font-size:12px; margin-bottom:50px; }
+.eco-phone [data-phone-screen] { display:grid; gap:24px; }
+.eco-phone .lbl { font-size:11px; } .eco-phone h3 { font-size:27px; line-height:1.2; }
+.eco-notification { padding:18px; border:1px solid #ffffff35; border-radius:16px; background:#ffffff10; display:grid; gap:12px; font-size:14px; }
+.eco-notification small { font-size:10px; } .eco-phone-caption { font-size:32px; line-height:1.15; margin-top:30px; color:var(--rose); }
+.eco-phone-home { position:absolute; bottom:13px; width:90px; height:4px; border-radius:8px; background:var(--pearl); left:calc(50% - 45px); }
+.eco-video { min-height:155px; background:linear-gradient(135deg,var(--rose),var(--champagne)); color:var(--deep); display:grid; place-content:center; text-align:center; border-radius:8px; } .eco-video span { font-size:38px; }
+.eco-count { font-size:30px; color:var(--rose); font-variant-numeric:tabular-nums; }
+.eco-badges { display:flex; gap:14px; flex-wrap:wrap; }
+.eco-badge { display:flex; align-items:center; gap:15px; border:1px solid var(--ink); background:var(--deep); color:var(--pearl); border-radius:10px; padding:12px 18px; }
+.eco-badge small,.eco-badge strong { display:block; } .eco-badge small { font-size:10px; } .eco-badge strong { font-size:20px; }
+.eco-play { width:0; height:0; border-left:24px solid var(--rose); border-top:16px solid transparent; border-bottom:16px solid transparent; }
+.eco-apple { width:25px; height:29px; background:var(--pearl); border-radius:45% 45% 40% 40%; position:relative; }
+.eco-apple:before { content:''; position:absolute; width:11px; height:7px; background:var(--pearl); transform:rotate(-35deg); top:-7px; left:13px; border-radius:70% 0; }
+.eco-desk-title { margin-top:64px; } .eco-gauge { display:grid; gap:10px; margin:16px 0; }
+.eco-check { display:flex; gap:12px; align-items:start; } .eco-check input { margin-top:6px; width:18px; height:18px; flex-shrink:0; }
+.eco-card input,.eco-card select { max-width:100%; min-width:0; } .eco-card [data-invite] { font-size:13px; }
+@media(max-width:700px){ .eco-grid,.eco-app-layout { grid-template-columns:minmax(0,1fr); gap:20px; } .eco-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .eco-card { padding:20px; } .eco-levels { grid-template-columns:repeat(2,minmax(0,1fr)); } .eco-levels>div:nth-child(3){grid-column:1/-1;} .eco-app-layout { gap:44px; } .eco-stats .t-lead { font-size:26px; } }
