@@ -11,3 +11,4 @@ BRIEF*.md
 CHANGES.md
 .codex-last.txt
 ChatGPT image prompts.txt
+tests/
