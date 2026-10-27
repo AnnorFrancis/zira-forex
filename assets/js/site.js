@@ -140,7 +140,7 @@
     dr.innerHTML = '<button class="drawer__close" type="button">Close</button>' +
       '<a class="big" href="' + root + 'index.html">Home</a>' + LINKS.map(function (l) { return '<a class="big" href="' + root + l[0] + '">' + l[1] + '</a>'; }).join('') +
       '<div class="drawer__foot"><a class="btn btn--full" style="--b-bg:var(--rose);--b-fg:var(--deep)" href="' + root + 'trading-room.html#join">Join the Trading Room</a>' +
-      '<button type="button" class="link" data-open-desk style="justify-self:start">Ask the desk</button><a class="link" href="' + root + 'portal.html">Student sign-in</a><span class="t-small t-soft">' + KF.brand.social.map(function (s) { return '<a class="link" href="' + s.url + '" target="_blank" rel="noopener">' + s.label + '</a>'; }).join(' &nbsp; ') + '</span></div>';
+      '<button type="button" class="link" data-open-desk style="justify-self:start">Ask the desk</button><a class="link" href="' + root + 'portal.html">Student area</a><span class="t-small t-soft">' + KF.brand.social.map(function (s) { return '<a class="link" href="' + s.url + '" target="_blank" rel="noopener">' + s.label + '</a>'; }).join(' &nbsp; ') + '</span></div>';
     document.body.appendChild(dr);
     var btn = nav.querySelector('.nav__menu');
     var hideT;
@@ -180,10 +180,10 @@
       '<div class="foot__top"><div class="foot__inv"><h2 data-split>Trade with me.</h2><p>See you in the community.</p>' +
       '<a class="btn" data-magnetic href="' + root + 'trading-room.html#join">Join the Trading Room</a></div>' +
       '<div class="foot__links">' + s.map(function (x) { return '<a class="link" href="' + x.url + '" target="_blank" rel="noopener">' + x.label + ' <span class="t-soft">' + x.count + '</span></a>'; }).join('') +
-      '<a class="link" href="' + root + 'results.html">Track record</a><a class="link" href="' + root + 'demo.html">Explore the full demo</a><a class="btn" href="' + root + 'app.html">Get the app</a><a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
+      '<a class="link" href="' + root + 'results.html">Past trade results</a><a class="link" href="' + root + 'demo.html">Explore the full demo</a><a class="btn" href="' + root + 'app.html">Get the app</a><a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
       '<p class="foot__risk"><strong>Risk warning.</strong> ' + KF.risk + '</p>' +
       '<div class="foot__legal"><span>&copy; 2026 ' + KF.brand.academy + ', ' + KF.brand.city + '</span>' +
-      '<nav aria-label="Legal"><a class="link" href="' + root + 'policies.html#risk">Risk disclosure</a><a class="link" href="' + root + 'policies.html#terms">Terms</a><a class="link" href="' + root + 'policies.html#refunds">Refunds</a><a class="link" href="' + root + 'policies.html#privacy">Privacy</a><a class="link" href="' + root + 'admin/index.html">Zira HQ</a></nav>' +
+      '<nav aria-label="Legal"><a class="link" href="' + root + 'policies.html#risk">Risk disclosure</a><a class="link" href="' + root + 'policies.html#terms">Terms</a><a class="link" href="' + root + 'policies.html#refunds">Refunds</a><a class="link" href="' + root + 'policies.html#privacy">Privacy</a><a class="link" href="' + root + 'admin/index.html">Management dashboard</a></nav>' +
       '<span class="t-soft">Sample website by Perkins Creative</span><span class="t-soft">Zira Forex is a sample brand; names and figures are fictional; photographs illustrate the sample.</span></div></div>' +
       '<div class="foot__name" aria-hidden="true"><span>ZIRA</span></div></footer>';
   }

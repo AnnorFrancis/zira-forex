@@ -251,3 +251,7 @@ body.hq { background: var(--pearl); color: var(--ink); }
   .c, .c * { min-width: 0; }
   .c input, .c textarea, .c select { max-width: 100%; }
 }
+
+/* Short explanations under management cards. */
+.hq-help { font-size:14px; line-height:1.65; color:var(--ink-soft); max-width:70ch; }
+.hq-head p { max-width:72ch; line-height:1.65; }
