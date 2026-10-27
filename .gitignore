@@ -12,3 +12,12 @@ CHANGES.md
 .codex-last.txt
 ChatGPT image prompts.txt
 tests/
+
+# Local demo handoff and media (not part of the public Pages site)
+DEMO-HANDOFF.md
+DEMO-WALKTHROUGH.md
+OPEN-DEMO.bat
+qa/
+*.mp4
+*.mov
+*.webm

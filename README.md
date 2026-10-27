@@ -23,3 +23,13 @@ See [CREDITS.md](CREDITS.md) for retained third-party and market-data credits.
 ## Ecosystem additions (Brief 5)
 
 `results.html`, `app.html` and `verify.html` share the website shell. The student Trading Desk and new HQ tools share `zf.db.v2`, which migrates existing `own` data from v1. Certificate sample codes: `ZF-CERT-1001`, `ZF-CERT-1002`, `ZF-CERT-1003`. App sends, reports and payment processing are local demo flows. Run `node tests/brief5.test.cjs` for functional regression checks.
+
+## Operational ecosystem (2026-10-27)
+Start at `demo.html`, or open `admin/index.html#operations`. The five new HQ sections are Infrastructure, Account risk, EA maintenance, Copy diagnostics and Connected coaching. Coaching feedback for Ama appears in `portal.html#coach-feedback`.
+
+All new workflows are simulations. Changes persist in this browser under `zf.operations.v1`. The suite overview contains a reset that clears only these new modules. Existing academy/order/journal data remains in `zf.db.v2`.
+
+Use `OPEN-DEMO.bat` for a consistent local HTTP origin (requires Python), then visit http://127.0.0.1:8767/demo.html. Static hosting remains compatible with GitHub Pages. The existing GitHub Pages site publishes from main at the repository root; updates retain the same website and admin URLs.
+
+See `DEMO-HANDOFF.md` for architecture and verification, and `DEMO-WALKTHROUGH.md` for a prospect presentation. Tests: `node tests/brief5.test.cjs` and `node tests/operations.test.cjs`.
+

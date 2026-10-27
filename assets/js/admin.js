@@ -293,6 +293,7 @@
   var NAV = [['Run the business', [['today', 'Today'], ['members', 'Members'], ['payments', 'Payments'], ['enquiries', 'Enquiries'], ['referrals', 'Referrals'], ['brokers', 'Broker links']]],
     ['Teach', [['setups', 'Setups'], ['academy', 'Academy'], ['live', 'Live sessions'], ['mentorship', 'Mentorship'], ['bootcamps', 'Bootcamps']]],
     ['Automate', [['telegram', 'Telegram bot'], ['app', 'App']]]];
+  if (window.ZiraOperations) { window.ZiraOperations.install(V, function () { render(); }); NAV.unshift(['Operating suite', [['operations', 'Suite overview'], ['infrastructure', 'Infrastructure'], ['risk', 'Account risk'], ['software', 'EA maintenance'], ['copying', 'Copy diagnostics'], ['coaching', 'Connected coaching']]]); }
   var TITLE = {}; NAV.forEach(function (g) { g[1].forEach(function (i) { TITLE[i[0]] = i[1]; }); });
   function cur() { var h = location.hash.slice(1); return V[h] ? h : 'today'; }
   function drawNav() {

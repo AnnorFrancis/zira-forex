@@ -180,7 +180,7 @@
       '<div class="foot__top"><div class="foot__inv"><h2 data-split>Trade with me.</h2><p>See you in the community.</p>' +
       '<a class="btn" data-magnetic href="' + root + 'trading-room.html#join">Join the Trading Room</a></div>' +
       '<div class="foot__links">' + s.map(function (x) { return '<a class="link" href="' + x.url + '" target="_blank" rel="noopener">' + x.label + ' <span class="t-soft">' + x.count + '</span></a>'; }).join('') +
-      '<a class="link" href="' + root + 'results.html">Track record</a><a class="btn" href="' + root + 'app.html">Get the app</a><a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
+      '<a class="link" href="' + root + 'results.html">Track record</a><a class="link" href="' + root + 'demo.html">Explore the full demo</a><a class="btn" href="' + root + 'app.html">Get the app</a><a class="link" href="' + KF.brand.whatsapp + '" target="_blank" rel="noopener">WhatsApp the desk</a></div></div>' +
       '<p class="foot__risk"><strong>Risk warning.</strong> ' + KF.risk + '</p>' +
       '<div class="foot__legal"><span>&copy; 2026 ' + KF.brand.academy + ', ' + KF.brand.city + '</span>' +
       '<nav aria-label="Legal"><a class="link" href="' + root + 'policies.html#risk">Risk disclosure</a><a class="link" href="' + root + 'policies.html#terms">Terms</a><a class="link" href="' + root + 'policies.html#refunds">Refunds</a><a class="link" href="' + root + 'policies.html#privacy">Privacy</a><a class="link" href="' + root + 'admin/index.html">Zira HQ</a></nav>' +
